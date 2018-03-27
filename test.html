@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <canvas id="tcanvas" style="border: 1px solid black;" width="600" height="400"></canvas>
+      <img src="Grid9ForStrokeOrder.jpg" id="grid" height="100px" width="100px" style="position:absolute; left:5vw;"/>
+  <script>
+  window.onload = function(){
+    var mycanvas = document.getElementById("tcanvas");
+    var ctx = mycanvas.getContext("2d");
+    var grid = document.getElementById("grid");
+
+    ctx.drawImage(grid, 100, 100);
+
+    ctx.font="60px Verdana";
+    ctx.fillText("好啊", 30, 110);
+  }
+
+  </script>
+</body>
+</html>

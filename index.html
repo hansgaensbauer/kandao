@@ -1,25 +1,174 @@
 <!DOCTYPE html>
 <html >
-<head>
-  <meta charset="UTF-8">
-  <title>Drawing canvas</title>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Writing</title>
+  </head>
+  <body style="background-color:#fff9bdff;">
+    <table width="100%" style="border: 1px solid black; text-align:center;">
+      <tr>
+        <td>
+          <h1>Character Writing (Online)</h1>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p>kàn'dào (to see and understand)</p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div id="check">View Character</div>
+        </td>
+      </tr>
+    </table>
+    <div id="paint">
+      <canvas id="myCanvas"></canvas>
+    </div>
+    <div id="reference">
+      <canvas id="refcanvas"></canvas>
+    </div>
+    <img id="background" src="background.png" alt="stroke order background" />
+    <div class="scriptdiv">
+      <script>
+      var back = document.getElementById("background");
+      back.style.positon = "absolute";
+      back.height = back.width =  window.innerHeight/1.7;
+      back.style.top = (document.getElementById("myCanvas").offsetTop) + "px";
+      back.style.left = ((window.innerWidth - (window.innerHeight/1.7))/2) + "px";
+      </script>
+    </div>
+    <table width="100%" style="border: 1px solid black; text-align:center;">
+      <tr>
+        <td>
+          <div id="clear">Clear Drawing</div>
+          <div id="evaluate" onclick="countempixls()">Evaluate</div>
+        </td>
+      </tr>
+    </table>
+  </body>
+  <div class="stylediv">
+    <style>
+    .stylediv, .scriptdiv{
+      display:none;
+    }
 
+    #refcanvas{
+      position:absolute;
+      display:none;
+    }
 
+    #background{
+      position:absolute;
+      z-index:-1;
+    }
+    </style>
+  </div>
+  <div class="scriptdiv">
+    <script>
+    function countempixls(){
+      console.log("evaluating");
+      var refim = document.getElementById("refcanvas").getContext("2d").getImageData(0,0,window.innerWidth,(window.innerHeight/1.7));
+      var subim = document.getElementById("myCanvas").getContext("2d").getImageData(0,0,window.innerWidth,(window.innerHeight/1.7));
+      var matchcount = 1;
+      var misscount = 1;
+      for(i = 0; i<=refim.data.length; i++){
+        if(refim.data[i] == subim.data[i]){
+          matchcount++;
+        }
+        else{
+          misscount++;
+        }
+      }
+      console.log(matchcount);
+      console.log(misscount);
+      alert((matchcount/misscount) + " percent accuracy");
+      console.log(matchcount/misscount);
 
-      <link rel="stylesheet" href="style.css">
+    }
+    </script>
+    <script>
+    var ref = document.getElementById("refcanvas");
+    ref.style.top = document.getElementById("myCanvas").offsetTop + "px";
+    var toggle = function(){
+      if(ref.style.display == "none"){
+        ref.style.display = "block";
+      }
+      else{
+        ref.style.display = "none";
+      }
+    }
+    document.getElementById("check").addEventListener("click", toggle);
+    </script>
+    <script>
+    window.onload = function(){
+      var pcanv = document.getElementById("myCanvas");
+      var rcanv = document.getElementById("refcanvas");
+      var ctd = pcanv.getContext("2d");
+      var ctx = rcanv.getContext("2d");
+      pcanv.width = rcanv.width = window.innerWidth;
+      pcanv.height = rcanv.height = (window.innerHeight/1.7)
+      ctx.font = (window.innerHeight/1.8) + "px Verdana";
+      ctx.textAlign="center";
+      var hormid = window.innerWidth/2;
+      var vertmid = document.getElementById("myCanvas").height/1.2;
+      ctx.fillText("好", hormid, vertmid);
+    }
+    </script>
+    <script>
+    var dcanvas = document.getElementById('myCanvas');
+    var clear = document.getElementById('clear');
+    var image = document.getElementById('image');
+    var dtx = dcanvas.getContext('2d');
 
+    var painting = document.getElementById('paint');
+    var paint_style = getComputedStyle(painting);
 
-</head>
+    var mouse = {x: 0, y: 0};
 
-<body>
-  <div id="paint">
-  <canvas id="myCanvas"></canvas>
-</div>
-<div id="clear">Clear Drawing</div>
-<div id="submit">Done</div>
-<img src="" id="image">
+    dcanvas.addEventListener('mousemove', function(e) {
+      mouse.x = e.pageX - this.offsetLeft;
+      mouse.y = e.pageY - this.offsetTop;
+    }, false);
 
-    <script  src="Interface.js"></script>
+    dcanvas.addEventListener('mousedown', function(e) {
+        dtx.beginPath();
+        dtx.moveTo(mouse.x, mouse.y);
 
-</body>
+        dcanvas.addEventListener('mousemove', onPaint, false);
+    }, false);
+
+    dcanvas.addEventListener('mouseup', function() {
+        dcanvas.removeEventListener('mousemove', onPaint, false);
+    }, false);
+
+    clear.addEventListener('mouseup', function() {
+      dtx.clearRect(0, 0, dcanvas.width, dcanvas.height);
+    });
+
+    function drawingCallback(data) {
+      console.log(data)
+    }
+
+    function httpGet(theUrl, data, callback) {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                callback(xmlHttp.responseText);
+        }
+        xmlHttp.open("GET", theUrl + "?" + data, true); // true for asynchronous
+        xmlHttp.send(null);
+    }
+
+    var onPaint = function() {
+        dtx.lineWidth = 15;
+        dtx.lineJoin = 'round';
+        dtx.lineCap = 'round';
+        dtx.strokeStyle = '#000000';
+        dtx.lineTo(mouse.x, mouse.y);
+        dtx.stroke();
+    }
+  </script>
+  </div>
 </html>

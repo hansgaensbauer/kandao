@@ -38,6 +38,7 @@ clear.addEventListener('mouseup', function() {
 
 submit.addEventListener('mouseup', function() {
    httpGet("check", "image=" + canvas.toDataURL("image/png"), drawingCallback);
+   ctx.closepath();
 });
 
 function drawingCallback(data) {
