@@ -1,1 +1,0 @@
-# compare imageA and imageB
